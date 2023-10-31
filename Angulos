@@ -1,0 +1,43 @@
+//Big Boss / Novelletto
+
+input
+  PeriodoEstoc(8);
+  PeriodoMediaEstocastico(4);
+  MediaCurta(10);
+  MediaLonga(20);
+
+var
+  sEstocastico, smediaEstocastico, smediaEstocastico20: Float;
+  vMediaCurta, vMediaLonga: Float;
+  Angle: Float;
+  ArcM, ArcE :integer;
+  vMedia, vMedia2, vStocastico     :integer;
+begin
+  sEstocastico := SlowStochastic(PeriodoEstoc);
+  smediaEstocastico := Media(PeriodoMediaEstocastico, sEstocastico);
+  vMediaCurta := MediaExp(MediaCurta, Close);
+  vMediaLonga := MediaExp(MediaLonga, Close);
+  ArcM := (vMediaLonga - vMediaCurta);
+  ArcE := (smediaEstocastico - vMediaCurta);
+
+  // Calcular ângulo entre as médias e o estocástico
+  Angle := Arctangent(sEstocastico); //(ArcM-ArcE)
+
+  // Converter o ângulo de radianos para graus
+  Angle := Angle * (180 / 3.14159265358979);
+  vMedia:= Angle * (vMediaLonga - vMediaCurta);
+  vMedia2:= Angle * (vMediaCurta - vMediaLonga);
+  vStocastico :=   Angle * (ArcM);
+ 
+  Plot3(vMedia); SetPlotColor(3,clyellow);
+  Plot4(vMedia2);SetPlotColor(4,clblue);
+
+  if (vMedia2 > 0) and (vMedia2[1]<1) then PlotText("Compra",clyellow,1,6,0);
+  if (vMedia > 0)  and (vMedia[1]<1) then PlotText("Venda",clyellow,1,6,0);
+
+end;
+
+
+
+
+
